@@ -1,52 +1,8 @@
-PS C:\Users\HP\Ruby Restaurant\ai-backend> cargo run   
-   Compiling const-oid v0.9.6
-   Compiling num-traits v0.2.19
-   Compiling tokio v1.47.1
-   Compiling base64ct v1.8.0
-   Compiling zeroize v1.8.2
-   Compiling byteorder v1.5.0
-   Compiling bitflags v2.9.4
-   Compiling rand v0.8.5
-   Compiling digest v0.10.7
-   Compiling futures-intrusive v0.5.0
-   Compiling pem-rfc7468 v0.7.0
-   Compiling spin v0.9.8
-   Compiling idna v1.1.0
-   Compiling der v0.7.10                                                                                                   
-   Compiling hmac v0.12.1                                                                                                  
-   Compiling atoi v2.0.0
-   Compiling num-integer v0.1.46
-   Compiling hkdf v0.12.4                                                                                                  
-   Compiling md-5 v0.10.6
-   Compiling lazy_static v1.5.0                                                                                            
-   Compiling base64 v0.21.7
-   Compiling url v2.5.7
-   Compiling chrono v0.4.42
-   Compiling signature v2.2.0
-   Compiling num-iter v0.1.45
-   Compiling sha2 v0.10.9
-   Compiling num-bigint-dig v0.8.4
-   Compiling spki v0.7.3
-   Compiling pkcs8 v0.10.2
-   Compiling sqlx-core v0.7.4
-   Compiling pkcs1 v0.7.5
-   Compiling sha1 v0.10.6                                                                                                  
-   Compiling rsa v0.9.8
-   Compiling windows-sys v0.60.2
-   Compiling tokio-stream v0.1.17
-   Compiling tokio-util v0.7.16
-   Compiling actix-rt v2.11.0
-   Compiling tempfile v3.23.0                                                                                              
-   Compiling sqlx-mysql v0.7.4
-   Compiling sqlx-postgres v0.7.4                                                                                          
-   Compiling h2 v0.3.27                                                                                                    
-   Compiling actix-codec v0.5.2                                                                                            
-   Compiling actix-server v2.6.0
-   Compiling sqlx-macros-core v0.7.4
-   Compiling actix-http v3.11.1
-   Compiling sqlx-macros v0.7.4                                                                                            
-   Compiling actix-web v4.11.0
-   Compiling sqlx v0.7.4
-   Compiling ai-backend v0.1.0 (C:\Users\HP\Ruby Restaurant\ai-backend)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 59.97s
-     Running `target\debug\ai-backend.exe`
+PS C:\Users\HP\Ruby Restaurant\ai-backend> cargo run
+error: `cargo run` could not determine which binary to run. Use the `--bin` option to specify a binary, or the `default-run` manifest key.
+available binaries: ai-backend, backfill, clear_db, create_db, ingest
+PS C:\Users\HP\Ruby Restaurant\ai-backend> 
+
+
+
+

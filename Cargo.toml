@@ -1,15 +1,49 @@
+[workspace]
+members = [
+    ".",
+    "db_models",
+]
+
 [package]
 name = "ai-backend"
 version = "0.1.0"
 edition = "2021"
+default-run = "ai-backend"
 
 [dependencies]
-actix-web = "^4"
-serde = { version = "^1", features = ["derive"] }
-serde_json = "^1"
-env_logger = "^0.11"
-tokio = { version = "^1", features = ["rt-multi-thread", "macros"] }
-sqlx = { version = "^0.7", features = ["runtime-tokio", "postgres", "mysql", "macros", "uuid", "chrono"] }
-anyhow = "^1"
-thiserror = "^1"
-chrono = { version = "^0.4", features = ["serde"] }
+dotenv = "0.15.0"
+sqlx = { version = "0.7", features = [ "runtime-tokio-rustls", "mysql", "postgres", "chrono" ] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+db_models = { path = "db_models" }
+
+actix-web = "4"
+env_logger = "0.10.0"
+linfa = "0.6.0"
+linfa-linear = "0.6.0"
+ndarray = "0.15.6"
+reqwest = { version = "0.11", features = ["json"] }
+scraper = "0.13.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+rand = "0.8"
+
+
+
+
+[[bin]]
+name = "backfill"
+path = "src/backfill.rs"
+
+
+
+[[bin]]
+name = "clear_db"
+path = "src/drop_db.rs"
+
+[[bin]]
+name = "create_db"
+path = "src/create_db.rs"

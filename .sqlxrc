@@ -1,0 +1,5 @@
+{
+    "DATABASE_URL": {
+        "env": "PG_DSN"
+    }
+}
