@@ -1,10 +1,11 @@
-use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 use anyhow::Context;
 use serde::Serialize;
 use sqlx::{MySqlPool, PgPool};
 use std::collections::HashMap;
 use std::env;
 use std::time::Duration;
+use tokio::sync::RwLock;
 use tracing::{error, info, warn};
 
 mod ml;
@@ -19,7 +20,7 @@ mod agent;
 // Define a struct to hold our application state
 struct AppState {
     pool: PgPool,
-    recommendation_cache: HashMap<i32, Vec<recommendations::Recommendation>>,
+    recommendation_cache: RwLock<HashMap<i32, Vec<recommendations::Recommendation>>>,
 }
 
 #[derive(Serialize)]
@@ -40,11 +41,36 @@ async fn get_recommendations(
     product_id: web::Path<i32>,
 ) -> impl Responder {
     let product_id = product_id.into_inner();
+    let cache = state.recommendation_cache.read().await;
     let recommendations = recommendations::get_recommendations_from_cache(
-        &state.recommendation_cache,
+        &cache,
         product_id,
     );
     HttpResponse::Ok().json(recommendations)
+}
+
+#[post("/api/retrain")]
+async fn retrain_model(state: web::Data<AppState>) -> impl Responder {
+    info!("Manual retraining triggered via API...");
+    match recommendations::train_and_cache_recommendations(&state.pool).await {
+        Ok(new_cache) => {
+            let count = new_cache.len();
+            let mut cache = state.recommendation_cache.write().await;
+            *cache = new_cache;
+            info!("Retraining complete. Cache updated with {} items.", count);
+            HttpResponse::Ok().json(serde_json::json!({
+                "status": "success",
+                "message": format!("Model retrained. {} items cached.", count)
+            }))
+        }
+        Err(e) => {
+            error!("Retraining failed: {:?}", e);
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "status": "error",
+                "message": e.to_string()
+            }))
+        }
+    }
 }
 
 #[get("/api/stock_optimization")]
@@ -113,7 +139,7 @@ async fn main() -> anyhow::Result<()> {
         }
         Err(e) => {
             error!("Failed to connect to MySQL: {}.", e);
-            warn!("âš ï¸  Reverting to local DB mode. Sync will be disabled, but API endpoints will function using local data.");
+            warn!("⚠️ Reverting to local DB mode. Sync will be disabled, but API endpoints will function using local data.");
             None
         }
 
@@ -160,7 +186,7 @@ async fn main() -> anyhow::Result<()> {
     // --- Create the application state ---
     let app_state = web::Data::new(AppState {
         pool: pg_pool.clone(),
-        recommendation_cache,
+        recommendation_cache: RwLock::new(recommendation_cache),
     });
 
 
@@ -170,6 +196,7 @@ async fn main() -> anyhow::Result<()> {
             .app_data(app_state.clone())
             .service(health)
             .service(get_recommendations)
+            .service(retrain_model)
             .service(get_stock_optimization)
             .service(get_trending_recipes)
             .service(get_market_intelligence)
